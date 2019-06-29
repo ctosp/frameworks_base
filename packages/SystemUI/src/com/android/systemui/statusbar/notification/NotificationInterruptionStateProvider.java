@@ -75,9 +75,11 @@ public class NotificationInterruptionStateProvider {
     protected boolean mUseHeadsUp = false;
     private boolean mDisableNotificationAlerts;
 
-    @Inject
-    public NotificationInterruptionStateProvider(Context context, NotificationFilter filter,
-            StatusBarStateController stateController, BatteryController batteryController) {
+    private boolean mLessBoringHeadsUp;
+
+    private boolean mSkipHeadsUp;
+
+    public NotificationInterruptionStateProvider(Context context) {
         this(context,
                 (PowerManager) context.getSystemService(Context.POWER_SERVICE),
                 IDreamManager.Stub.asInterface(
@@ -355,6 +357,23 @@ public class NotificationInterruptionStateProvider {
         return true;
     }
 
+    public void setUseLessBoringHeadsUp(boolean lessBoring) {
+        mLessBoringHeadsUp = lessBoring;
+    }
+
+    public void setGamingPeekMode(boolean skipHeadsUp) {
+        mSkipHeadsUp = skipHeadsUp;
+    }
+
+    public boolean shouldSkipHeadsUp(StatusBarNotification sbn) {
+        boolean isImportantHeadsUp = false;
+        String notificationPackageName = sbn.getPackageName().toLowerCase();
+        isImportantHeadsUp = notificationPackageName.contains("dialer") ||
+                notificationPackageName.contains("messaging") ||
+                notificationPackageName.contains("clock");
+        return !getShadeController().isDozing() && mLessBoringHeadsUp && mSkipHeadsUp && !isImportantHeadsUp;
+    }
+
     /**
      * Common checks between alerts that occur while the device is awake (heads up & bubbles).
      *
@@ -367,7 +386,14 @@ public class NotificationInterruptionStateProvider {
 
         if (mPresenter.isDeviceInVrMode()) {
             if (DEBUG_HEADS_UP) {
-                Log.d(TAG, "No alerting: no huns or vr mode");
+                Log.d(TAG, "No heads up: no huns or vr mode or less boring headsup or gaming mode enabled");
+            }
+            return false;
+        }
+
+        if (entry.shouldSuppressPeek()) {
+            if (DEBUG_HEADS_UP) {
+                Log.d(TAG, "No heads up: suppressed by DND: " + sbn.getKey());
             }
             return false;
         }
