@@ -131,7 +131,6 @@ public class CameraServiceProxy extends SystemService
 
     private long mClosedEvent;
 
-
     /**
      * Structure to track camera usage
      */
@@ -258,7 +257,6 @@ public class CameraServiceProxy extends SystemService
                 com.android.internal.R.bool.config_allowMediaUidForCameraServiceProxy);
         mSendCameraStatusIntent = mContext.getResources().getBoolean(
                 com.android.internal.R.bool.config_sendCameraStatusIntent);
-
     }
 
     @Override
