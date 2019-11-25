@@ -16,4 +16,12 @@
 
  package android.content.pm.permission;
 
- parcelable SplitPermissionInfoParcelable;
+    <!-- Custom padding size on biometric dialog -->
+    <dimen name="fp_dialog_error_padding_top">16dp</dimen>
+    <dimen name="fp_dialog_error_padding_bottom">24dp</dimen>
+
+    <!-- Custom padding size on biometric dialog when fingerprint in display is active -->
+    <dimen name="fp_dialog_error_padding_top_fingerprint_in_display">@dimen/fp_dialog_error_padding_top</dimen>
+    <dimen name="fp_dialog_error_padding_bottom_fingerprint_in_display">72dp</dimen>
+
+</resources>
