@@ -248,10 +248,7 @@ public class PagedTileLayout extends ViewPager implements QSTileLayout {
         int numPages = Math.max(nTiles / mPages.get(0).maxTiles(), 1);
 
         // Add one more not full page if needed
-        if (nTiles > numPages * mPages.get(0).maxTiles()) {
-            numPages++;
-        }
-
+        numPages += (nTiles % mPages.get(0).maxTiles() == 0 ? 0 : 1);
         final int NP = mPages.size();
         for (int i = 0; i < NP; i++) {
             mPages.get(i).removeAllViews();
